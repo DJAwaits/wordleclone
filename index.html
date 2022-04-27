@@ -10,42 +10,42 @@
     <div class="content">
         <table>
             <tbody id="board">
-            <tr>
+            <tr id="row1">
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
             </tr>
-            <tr>
+            <tr id="row2">
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
             </tr>
-            <tr>
+            <tr id="row3">
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
             </tr>
-            <tr>
+            <tr id="row4">
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
             </tr>
-            <tr>
+            <tr id="row5">
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
             </tr>
-            <tr>
+            <tr id="row6">
                 <td></td>
                 <td></td>
                 <td></td>
@@ -55,39 +55,48 @@
             </tbody>
         </table>
         <div class="input-container">
-            <input type="text" maxlength="5" minlength="5">
+            <input id="input" type="text" maxlength="5" minlength="5">
             <button>Enter!</button>
+        </div>
+        <div>
+            <button id="restart">Restart Game?</button>
         </div>
         <p id="game-over"></p>
     </div>
 </div>
 <script>
-    const answer = "CRANE"; //todo make this random word
+    const answer = ["CRANE", "LILLY", "FJORD"]; //todo make this random word
     const board = document.getElementById('board');
     const textBox = document.querySelector('input');
     const submitButton = document.querySelector('button');
     const gameOverMessage = document.getElementById('game-over');
+    const answerInput = document.getElementById('input');
+    const restartButton = document.getElementById('restart');
+    const row1 = document.getElementById('row1');
+    const row2 = document.getElementById('row2');
+    const row3 = document.getElementById('row3');
+    const row4 = document.getElementById('row4');
+    const row5 = document.getElementById('row5');
+    const row6 = document.getElementById('row6');
+    const tableData = document.getElementsByTagName('td')
 
     let currentGuessNumber = 0
+    let randomAnswer = answer[Math.floor(Math.random()*answer.length)];
 
     submitButton.addEventListener('click', function(e){
         let guess = textBox.value;
         if (guess.length !==5){
             return //don't accept words that aren't 5 letters long
         }
-        //todo clear the textbox once you hit submit
-
+        //clear the textbox once you hit submit
+        answerInput.value = "";
         //render guess to the board
         writeGuess(guess) //todo create this function
 
         currentGuessNumber++
 
-        //todo check for win
-
-        //todo check for loss
-
         //check for win
-        if (guess.toUpperCase() === answer.toUpperCase()){
+        if (guess.toUpperCase() === randomAnswer.toUpperCase()){
             gameOverMessage.textContent = 'You Won!!!';
             submitButton.remove();
             textBox.remove();
@@ -96,7 +105,7 @@
 
         //check for loss
         if (currentGuessNumber >= board.children.length){
-            gameOverMessage.textContent = `You lost :( The word was ${answer}.`;
+            gameOverMessage.textContent = `You lost :( The word was ${randomAnswer}.`;
             submitButton.remove();
             textBox.remove();
             return
@@ -105,7 +114,7 @@
 
     function writeGuess(guess){
         //build our match array so we easily see what matches
-        let matchArray = buildMatchArray(guess) //todo create function that turns words into arrays
+        let matchArray = buildMatchArray(guess) //create function that turns words into arrays
 
         //identify the current tr tag
         let currentGuessRow = board.children[currentGuessNumber];
@@ -130,14 +139,14 @@
         guess = guess.toUpperCase();
         let answerAsArray = [];
         let matchArray = [0, 0, 0, 0, 0]; //assume no match to start
-        for (let i=0; i < answer.length; i++){
-            let letter = answer[i].toUpperCase();
+        for (let i=0; i < randomAnswer.length; i++){
+            let letter = randomAnswer[i].toUpperCase();
             answerAsArray.push(letter);
         }
         //find exact matches first
         for (let i = 0; i < guess.length; i++){
             let letter = guess[i];
-            if (letter === answer[i]){
+            if (letter === randomAnswer[i]){
                 answerAsArray[i] = null; //remove letter to prevent matching it as yellow, too
                 matchArray[i] = 2; //indicate we found a match
             }
@@ -161,6 +170,10 @@
         return matchArray
 
     }
+
+    restartButton.addEventListener('click', function(e){
+        location.reload();
+    })
 </script>
 </body>
 </html>
